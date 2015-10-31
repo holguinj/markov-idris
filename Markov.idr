@@ -5,6 +5,7 @@ import Data.Vect
 import Effects
 import Effect.Random
 import Effect.StdIO
+import Effect.System
 import Example
 
 -- %default total
@@ -61,8 +62,14 @@ getWords' (S k) acc mmap =
             Nothing => getWords' Z acc mmap
             Just word => getWords' k (acc ++ [word]) mmap
 
-main' : { [STDIO, RND] } Eff ()
-main' = do srand 12345888
+||| The RND effect doesn't do this for us, so pick something based on the time.
+getTimeSeed : Eff Integer [SYSTEM]
+getTimeSeed = time
+
+main' : { [STDIO, RND, SYSTEM] } Eff ()
+main' = do srand !getTimeSeed
+           putStr "Using random seed: "
+           putStrLn (show !getTimeSeed)
            case !(rndStart babelMap) of
              Nothing => printLn "Oh shit, nothing to print!"
              Just word => printLn $ unwords $ !(getWords' 7 [word] babelMap)
