@@ -39,13 +39,19 @@ nextWord word mmap =
     Nothing    => pure Nothing -- cool
     Just words => rndSelect words
 
+||| Returns True iff the word starts with an uppercase letter.
+isStartWord : String -> Bool
+isStartWord word = case unpack word of
+                        [] => False
+                        (l::_) => isUpper l
+
 ||| Returns True iff the word does not end in `.`
 isEndWord : String -> Bool
 isEndWord = isSuffixOf "."
 
 ||| Given a MarkovMap, return a list of words that are valid starters.
 markovStartingWords : MarkovMap -> List String
-markovStartingWords = filter (not . isEndWord) . map fst . toList
+markovStartingWords = filter isStartWord . map fst . toList
 
 ||| Return a single random starting word for a given MarkovMap.
 rndStart : MarkovMap -> { [RND] } Eff (Maybe String)
