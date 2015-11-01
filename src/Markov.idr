@@ -33,6 +33,14 @@ showFile (fname::_) = do fcontents' <- run $ readText fname
                            Left errMsg => putStrLn errMsg
                            Right fcontents => putStrLn fcontents
 
+
+scrubFile : List String -> IO ()
+scrubFile [] = putStrLn "The 'scrub' command requires a file path."
+scrubFile (fname::_) = do fcontents' <- run $ readText fname
+                          case fcontents' of
+                            Left errMsg => putStrLn errMsg
+                            Right fcontents => putStrLn $ cleanup fcontents
+
 markovFromFile : List String -> IO ()
 markovFromFile [] = putStrLn "The 'load' command requires a file path."
 markovFromFile (fname::_) = do fcontents' <- run $ readText fname
@@ -47,6 +55,7 @@ helpText = "Call with no arguments to generate a sentence from the default map,"
               commands : List String
               commands = [ "load [path] -> generate a sentence from a given file."
                          , "show [path] -> read the entire file at [path] to stdout. For debugging file IO only."
+                         , "scrub [path] -> preprocess the file at [path] and print it to stdout. For debugging."
                          , "map -> print the default Markov map."
                          , "help -> print this help." ]
 
@@ -54,6 +63,7 @@ runCommand : String -> List String -> IO ()
 runCommand command args = case command of
                             "load" => markovFromFile args
                             "show" => showFile args
+                            "scrub" => scrubFile args
                             "map" => putStrLn $ prettyShow babelMap
                             "help" => putStrLn helpText
                             x => do putStrLn $ "'" ++ x ++ "' is not a valid command.\n"
