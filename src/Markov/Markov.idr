@@ -6,7 +6,6 @@ import Effects
 import Effect.Random
 import Effect.StdIO
 import Effect.System
-import Effect.File
 
 import Markov.Analyze
 import Markov.Example
@@ -62,6 +61,16 @@ getWords n mmap = case !(rndStart mmap) of
                        Nothing => pure ["Empty markov map!"]
                        Just start => getWords' n [start] mmap
 
+||| The RND effect doesn't do this for us, so pick something based on the time.
+getTimeSeed : Eff Integer [SYSTEM]
+getTimeSeed = time
+
+main' : { [STDIO, RND, SYSTEM] } Eff ()
+main' = do srand !getTimeSeed
+           putStr "Using random seed: "
+           putStrLn (show !getTimeSeed)
+           printLn $ unwords $ !(getWords 50 babelMap)
+
 ||| Join a list of strings together using the given delimeter.
 join : List String -> String -> String
 join strs delimeter = str $ intersperse delimeter strs
@@ -74,43 +83,17 @@ prettyShow mmap = let listified = Data.SortedMap.toList mmap in
                     prettyShow' : (String, List String) -> String
                     prettyShow' (word, followers) = str $ [word, ": "] ++ [(join followers ", ")]
 
-||| The RND effect doesn't do this for us, so pick something based on the time.
-getTimeSeed : Eff Integer [SYSTEM]
-getTimeSeed = time
-
-main' : MarkovMap -> { [STDIO, RND, SYSTEM] } Eff ()
-main' mmap = do srand !getTimeSeed
-                putStr "Using random seed: "
-                putStrLn (show !getTimeSeed)
-                printLn $ unwords $ !(getWords 50 mmap)
-
-markovFromFile' : String -> IO ()
-markovFromFile' fname = do fcontents' <- run $ readText fname
-                           case fcontents' of
-                                Left _ => putStrLn "Sorry, I was unable to read that file."
-                                Right fcontents => run $ main' $ buildMarkovMap fcontents
-
-markovFromFile : (args: List String) -> IO ()
-markovFromFile [] = putStrLn "Please supply the path to a file to load."
-markovFromFile (fname::_) = markovFromFile' fname
-
 helpText : String
-helpText = "The supported commands are:\n  " ++ join commands "\n  "
-            where
-              commands : List String
-              commands = [ "load [path] -> generate a sentence from a given file."
-                         , "map -> print the default Markov map."
-                         , "help -> print this help." ]
+helpText = "The supported commands are:\n  map -> print the Markov map.\n  help -> print this help."
 
 runCommand : String -> List String -> IO ()
 runCommand command args = case command of
                             "help" => putStrLn helpText
                             "map" => putStrLn $ prettyShow babelMap
-                            "load" => markovFromFile args
                             _ => do putStrLn "That command is not supported."
                                     putStrLn helpText
 
 main : IO ()
 main = case !getArgs of
             (_::command::args) => runCommand command args
-            _ => run $ main' babelMap
+            _ => run main'
