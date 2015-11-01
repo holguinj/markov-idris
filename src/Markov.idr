@@ -11,68 +11,10 @@ import Effect.File
 import Markov.Analyze
 import Markov.Example
 import Markov.File
+import Markov.Generate
+import Markov.MarkovMap
 
 -- %default total
-
-||| Concatenate the given list of strings into a single string.
-str : List String -> String
-str [] = ""
-str strs = foldr Prelude.Strings.(++) "" strs
-
-||| Given a word and a MarkovMap, selects a word that could follow at random.
-nextWord : (word : String) -> MarkovMap -> { [RND] } Eff (Maybe String)
-nextWord word mmap =
-  case lookup word mmap of
-    Nothing    => pure Nothing -- cool
-    Just words => rndSelect words
-
-||| Returns True iff the word starts with an uppercase letter.
-isStartWord : String -> Bool
-isStartWord word = case unpack word of
-                        [] => False
-                        (l::_) => isUpper l
-
-||| Returns True iff the word ends in `.`, `?`, or `!`
-isEndWord : String -> Bool
-isEndWord word = case unpack word of
-                      [] => False
-                      chars@(_::_) => elem (last chars) endChars
-                 where
-                   endChars : List Char
-                   endChars = ['.', '?', '!']
-
-||| Given a MarkovMap, return a list of words that are valid starters.
-markovStartingWords : MarkovMap -> List String
-markovStartingWords = filter isStartWord . map fst . toList
-
-||| Return a single random starting word for a given MarkovMap.
-rndStart : MarkovMap -> { [RND] } Eff (Maybe String)
-rndStart = rndSelect . markovStartingWords
-
-getWords' : Nat -> (acc : Vect (S n) String) -> MarkovMap -> { [RND] } Eff (List String)
-getWords' Z acc _ = pure $ toList acc
-getWords' (S k) acc mmap =
-  let word = last acc in
-    do case !(nextWord word mmap) of
-            Nothing => getWords' Z acc mmap
-            Just word => getWords' (if isEndWord word then Z else k) (acc ++ [word]) mmap
-
-getWords : Nat -> MarkovMap -> { [RND] } Eff (List String)
-getWords n mmap = case !(rndStart mmap) of
-                       Nothing => pure ["Empty markov map!"]
-                       Just start => getWords' n [start] mmap
-
-||| Join a list of strings together using the given delimeter.
-join : List String -> String -> String
-join strs delimeter = str $ intersperse delimeter strs
-
-||| Convert a MarkovMap into a human-readable string.
-prettyShow : MarkovMap -> String
-prettyShow mmap = let listified = Data.SortedMap.toList mmap in
-                      join (map prettyShow' listified) "\n"
-                  where
-                    prettyShow' : (String, List String) -> String
-                    prettyShow' (word, followers) = str $ [word, ": "] ++ [(join followers ", ")]
 
 ||| The RND effect doesn't do this for us, so pick something based on the time.
 getTimeSeed : Eff Integer [SYSTEM]

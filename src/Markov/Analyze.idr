@@ -2,13 +2,7 @@ module Markov.Analyze
 
 import Data.SortedMap
 
-||| A type representing a sorted map of String -> List String
-MarkovMap : Type
-MarkovMap = SortedMap String (List String)
-%name MarkovMap mmap
-
-emptyMarkovMap : MarkovMap
-emptyMarkovMap = empty
+import Markov.MarkovMap
 
 ||| Adds an entry to a markovMap, even if that word is already there.
 conjWord : (baseWord : String) -> (newWord : String) -> MarkovMap -> MarkovMap
