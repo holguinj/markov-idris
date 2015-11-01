@@ -56,7 +56,7 @@ runCommand command args = case command of
                             "show" => showFile args
                             "map" => putStrLn $ prettyShow babelMap
                             "help" => putStrLn helpText
-                            _ => do putStrLn "That command is not supported."
+                            x => do putStrLn $ "'" ++ x ++ "' is not a valid command.\n"
                                     putStrLn helpText
 
 main : IO ()
