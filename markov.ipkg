@@ -1,0 +1,9 @@
+package markov
+
+modules = Markov.Analyze, Markov.Example, Markov
+sourcedir = src
+
+opts = "-p effects -p contrib"
+
+main = Markov
+executable = markov

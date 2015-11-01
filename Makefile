@@ -1,2 +1,5 @@
 DEFAULT:
-	cd src/Markov && idris -o ../../markov Markov.idr -p effects -p contrib
+	idris --build markov.ipkg
+
+clean:
+	idris --clean markov.ipkg

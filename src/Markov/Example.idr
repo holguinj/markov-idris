@@ -1,6 +1,6 @@
-module Example
+module Markov.Example
 
-import Analyze
+import Markov.Analyze
 
 babel : String
 babel = """

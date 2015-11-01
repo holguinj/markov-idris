@@ -6,9 +6,9 @@ import Effects
 import Effect.Random
 import Effect.StdIO
 import Effect.System
-import Example
 
-import Analyze
+import Markov.Example
+import Markov.Analyze
 
 -- %default total
 
@@ -68,7 +68,7 @@ main' : { [STDIO, RND, SYSTEM] } Eff ()
 main' = do srand !getTimeSeed
            putStr "Using random seed: "
            putStrLn (show !getTimeSeed)
-           printLn $ unwords $ !(getWords 30 babelMap)
+           printLn $ unwords $ !(getWords 50 babelMap)
 
 ||| Join a list of strings together using the given delimeter.
 join : List String -> String -> String
