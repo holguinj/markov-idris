@@ -26,3 +26,5 @@ prettyShow mmap = let listified = Data.SortedMap.toList mmap in
                   where
                     prettyShow' : (String, List String) -> String
                     prettyShow' (word, followers) = str $ [word, ": "] ++ [(join followers ", ")]
+
+instance Show MarkovMap where show = prettyShow
