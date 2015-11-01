@@ -45,9 +45,14 @@ isStartWord word = case unpack word of
                         [] => False
                         (l::_) => isUpper l
 
-||| Returns True iff the word does not end in `.`
+||| Returns True iff the word does not end in `.`, `?`, or `!`
 isEndWord : String -> Bool
-isEndWord = isSuffixOf "."
+isEndWord word = case unpack word of
+                      [] => False
+                      chars@(_::_) => elem (last chars) endChars
+                 where
+                   endChars : List Char
+                   endChars = ['.', '?', '!']
 
 ||| Given a MarkovMap, return a list of words that are valid starters.
 markovStartingWords : MarkovMap -> List String
