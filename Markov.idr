@@ -29,8 +29,8 @@ conjWord baseWord newWord mmap =
 buildMarkovMap : List String -> MarkovMap -> MarkovMap
 buildMarkovMap [] mmap = mmap -- done
 buildMarkovMap (x :: []) mmap = mmap -- also done
-buildMarkovMap (base :: (next :: words)) mmap =
-  buildMarkovMap words $ conjWord base next mmap -- not super happy with this
+buildMarkovMap (base :: rest@(next :: _)) mmap =
+  buildMarkovMap rest $ conjWord base next mmap -- not super happy with this
 
 ||| Given a word and a MarkovMap, selects a word that could follow at random.
 nextWord : (word : String) -> MarkovMap -> { [RND] } Eff (Maybe String)
