@@ -29,7 +29,7 @@ main' mmap = do srand !getTimeSeed
 markovFromFile' : String -> IO ()
 markovFromFile' fname = do fcontents' <- run $ readText fname
                            case fcontents' of
-                                Left _ => putStrLn "Sorry, I was unable to read that file."
+                                Left errMsg => putStrLn errMsg
                                 Right fcontents => run $ main' $ buildMarkovMap fcontents
 
 markovFromFile : (args: List String) -> IO ()
