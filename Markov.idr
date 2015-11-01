@@ -45,7 +45,7 @@ isStartWord word = case unpack word of
                         [] => False
                         (l::_) => isUpper l
 
-||| Returns True iff the word does not end in `.`, `?`, or `!`
+||| Returns True iff the word ends in `.`, `?`, or `!`
 isEndWord : String -> Bool
 isEndWord word = case unpack word of
                       [] => False
