@@ -78,7 +78,33 @@ main' = do srand !getTimeSeed
            putStrLn (show !getTimeSeed)
            case !(rndStart babelMap) of
              Nothing => printLn "Oh shit, nothing to print!"
-             Just word => printLn $ unwords $ !(getWords' 7 [word] babelMap)
+             Just word => printLn $ unwords $ !(getWords' 10 [word] babelMap)
+
+str : List String -> String
+str [] = ""
+str strs = foldr Prelude.Strings.(++) "" strs
+
+join : List String -> String -> String
+join strs delimeter = str $ intersperse delimeter strs
+
+prettyShow : MarkovMap -> String
+prettyShow mmap = let listified = Data.SortedMap.toList mmap in
+                      join (map prettyShow' listified) "\n"
+                  where
+                    prettyShow' : (String, List String) -> String
+                    prettyShow' (word, followers) = str $ [word, ": "] ++ [(join followers ", ")]
+
+helpText : String
+helpText = "The supported commands are:\n  map -> print the Markov map.\n  help -> print this help."
+
+runCommand : String -> IO ()
+runCommand command = case command of
+                          "help" => putStrLn helpText
+                          "map" => putStrLn $ prettyShow babelMap
+                          _ => do putStrLn "That command is not supported."
+                                  putStrLn helpText
 
 main : IO ()
-main = run main'
+main = case !getArgs of
+            (_::command::_) => runCommand command
+            _ => run main'
