@@ -1,2 +1,2 @@
 DEFAULT:
-	idris -o markov Markov.idr -p effects -p contrib
+	cd src/Markov && idris -o ../../markov Markov.idr -p effects -p contrib
