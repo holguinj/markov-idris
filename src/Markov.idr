@@ -20,7 +20,7 @@ import Markov.MarkovMap
 getTimeSeed : Eff Integer [SYSTEM]
 getTimeSeed = time
 
-main' : MarkovMap -> { [STDIO, RND, SYSTEM] } Eff ()
+main' : MarkovMap -> Eff () [STDIO, RND, SYSTEM]
 main' mmap = do srand !getTimeSeed
                 putStr "Using random seed: "
                 putStrLn (show !getTimeSeed)
