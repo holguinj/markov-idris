@@ -26,29 +26,36 @@ main' mmap = do srand !getTimeSeed
                 putStrLn (show !getTimeSeed)
                 printLn $ unwords $ !(getWords 50 mmap)
 
-markovFromFile' : String -> IO ()
-markovFromFile' fname = do fcontents' <- run $ readText fname
-                           case fcontents' of
-                                Left errMsg => putStrLn errMsg
-                                Right fcontents => run $ main' $ buildMarkovMap fcontents
+showFile : List String -> IO ()
+showFile [] = putStrLn "The 'show' command requires a file path."
+showFile (fname::_) = do fcontents' <- run $ readText fname
+                         case fcontents' of
+                           Left errMsg => putStrLn errMsg
+                           Right fcontents => putStrLn fcontents
 
-markovFromFile : (args: List String) -> IO ()
-markovFromFile [] = putStrLn "Please supply the path to a file to load."
-markovFromFile (fname::_) = markovFromFile' fname
+markovFromFile : List String -> IO ()
+markovFromFile [] = putStrLn "The 'load' command requires a file path."
+markovFromFile (fname::_) = do fcontents' <- run $ readText fname
+                               case fcontents' of
+                                 Left errMsg => putStrLn errMsg
+                                 Right fcontents => run $ main' $ buildMarkovMap fcontents
 
 helpText : String
-helpText = "The supported commands are:\n  " ++ join commands "\n  "
+helpText = "Call with no arguments to generate a sentence from the default map,"
+           ++ " or try one of the following commands:\n  " ++ join commands "\n  "
             where
               commands : List String
               commands = [ "load [path] -> generate a sentence from a given file."
+                         , "show [path] -> read the entire file at [path] to stdout. For debugging file IO only."
                          , "map -> print the default Markov map."
                          , "help -> print this help." ]
 
 runCommand : String -> List String -> IO ()
 runCommand command args = case command of
-                            "help" => putStrLn helpText
-                            "map" => putStrLn $ prettyShow babelMap
                             "load" => markovFromFile args
+                            "show" => showFile args
+                            "map" => putStrLn $ prettyShow babelMap
+                            "help" => putStrLn helpText
                             _ => do putStrLn "That command is not supported."
                                     putStrLn helpText
 
