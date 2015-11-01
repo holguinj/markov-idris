@@ -1,5 +1,7 @@
 module Example
 
+import Analyze
+
 babel : String
 babel = """
   The universe (which others call the Library) is composed of an indefinite and 
@@ -130,8 +132,6 @@ retained prodigious arcana for his future. Thousands of the greedy abandoned
 their sweet native hexagons and rushed up the stairways, urged on by the vain 
 intention of finding their Vindication. These pilgrims disputed in the narrow 
 
-
-
 corridors, proferred dark curses, strangled each other on the divine stairways, 
 flung the deceptive books into the air shafts, met their death cast down in a 
 similar fashion by the inhabitants of remote regions. Others went mad ... The 
@@ -163,8 +163,6 @@ long periods of time, would hide in the latrines with some metal disks in a
 forbidden dice cup and feebly mimic the divine disorder. 
 
 Others, inversely, believed that it was fundamental to eliminate useless 
-
-
 
 works. They invaded the hexagons, showed credentials which were not always 
 false, leafed through a volume with displeasure and condemned whole shelves: 
@@ -198,8 +196,6 @@ my place be in hell. Let me be outraged and annihilated, but for one instant, in
 one being, let Your enormous Library be justified. The impious maintain that 
 nonsense is normal in the Library and that the reasonable (and even humble and 
 
-
-
 pure coherence) is an almost miraculous exception. They speak (I know) of the 
 "feverish Library whose chance volumes are constantly in danger of changing 
 into others and affirm, negate and confuse everything like a delirious divinity." 
@@ -232,8 +228,6 @@ The methodical task of writing distracts me from the present state of men.
 The certitude that everything has been written negates us or turns us into 
 phantoms. I know of districts in which the young men prostrate themselves 
 
-
-
 before books and kiss their pages in a barbarous manner, but they do not know 
 how to decipher a single letter. Epidemics, heretical conflicts, peregrinations 
 which inevitably degenerate into banditry, have decimated the population. I 
@@ -252,30 +246,20 @@ does have such a limit. I venture to suggest this solution to the ancient proble
 The Library is unlimited and cyclical. If an eternal traveler were to cross it in any 
 direction, after centuries he would see that the same volumes were repeated in 
 the same disorder (which, thus repeated, would be an order: the Order). My 
-solitude is gladdened by this elegant hope 4 . 
-
-Translated by J. E. I. 
-
-
+solitude is gladdened by this elegant hope. 
 
 The original manuscript does not contain digits or capital letters. The punctuation has been 
 limited to the comma and the period. These two signs, the space and the twenty-two letters of the 
 alphabet are the twenty-five symbols considered sufficient by this unknown author. (Editor's 
 note.) 
 
-2 
-
 Before, there was a man for every three hexagons. Suicide and pulmonary diseases have 
 destroyed that proportion. A memory of unspeakable melancholy: at times I have traveled for 
 many nights through corridors and along polished stairways without finding a single librarian. 
 
-3 
-
 I repeat: it suffices that a book be possible for it to exist. Only the impossible is excluded. For 
 example: no book can be a ladder, although no doubt there are books which discuss and negate 
 and demonstrate this possibility and others whose structure corresponds to that of a ladder. 
-
-4 
 
 Letizia Alvarez de Toledo has observed that this vast Library is useless: rigorously speaking, a 
 single volume would be sufficient, a volume of ordinary format, printed in nine or ten point type, 
@@ -288,5 +272,5 @@ this silky vade mecum would not be convenient: each apparent page would unfold i
 analogous ones; the inconceivable middle page would have no reverse. 
 """
 
-babelWords : List String
-babelWords = words babel
+babelMap : MarkovMap
+babelMap = buildMarkovMap babel

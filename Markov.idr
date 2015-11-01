@@ -8,29 +8,14 @@ import Effect.StdIO
 import Effect.System
 import Example
 
+import Analyze
+
 -- %default total
 
-||| A type representing a sorted map of String -> List String
-MarkovMap : Type
-MarkovMap = SortedMap String (List String)
-%name MarkovMap mmap
-
-emptyMarkovMap : MarkovMap
-emptyMarkovMap = empty
-
-||| Adds an entry to a markovMap, even if that word is already there.
-conjWord : (baseWord : String) -> (newWord : String) -> MarkovMap -> MarkovMap
-conjWord baseWord newWord mmap =
-    case lookup baseWord mmap of
-      Nothing       => insert baseWord [newWord] mmap
-      Just oldWords => insert baseWord (newWord :: oldWords) mmap
-
-||| Progressively populates a (possibly empty) MarkovMap using the given list of strings.
-buildMarkovMap : List String -> MarkovMap -> MarkovMap
-buildMarkovMap [] mmap = mmap -- done
-buildMarkovMap (x :: []) mmap = mmap -- also done
-buildMarkovMap (base :: rest@(next :: _)) mmap =
-  buildMarkovMap rest $ conjWord base next mmap -- not super happy with this
+||| Concatenate the given list of strings into a single string.
+str : List String -> String
+str [] = ""
+str strs = foldr Prelude.Strings.(++) "" strs
 
 ||| Given a word and a MarkovMap, selects a word that could follow at random.
 nextWord : (word : String) -> MarkovMap -> { [RND] } Eff (Maybe String)
@@ -61,9 +46,6 @@ markovStartingWords = filter isStartWord . map fst . toList
 ||| Return a single random starting word for a given MarkovMap.
 rndStart : MarkovMap -> { [RND] } Eff (Maybe String)
 rndStart = rndSelect . markovStartingWords
-
-babelMap : MarkovMap
-babelMap = buildMarkovMap babelWords empty
 
 getWords' : Nat -> (acc : Vect (S n) String) -> MarkovMap -> { [RND] } Eff (List String)
 getWords' Z acc _ = pure $ toList acc
