@@ -24,7 +24,7 @@ cleanup : String -> String
 cleanup = remove badPunctuation
             where
               badPunctuation : List Char
-              badPunctuation = [',', ':', ';', '(', ')', '/', '[', ']', '"', '*', '<', '>', '-']
+              badPunctuation = [',', ':', ';', '(', ')', '/', '[', ']', '"', '*', '<', '>', '-', '_']
 
 ||| Progressively populates a (possibly empty) MarkovMap using the given list of strings.
 buildMarkovMap' : List String -> MarkovMap -> MarkovMap
