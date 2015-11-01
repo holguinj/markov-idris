@@ -71,7 +71,12 @@ getWords' (S k) acc mmap =
   let word = last acc in
     do case !(nextWord word mmap) of
             Nothing => getWords' Z acc mmap
-            Just word => getWords' k (acc ++ [word]) mmap
+            Just word => getWords' (if isEndWord word then Z else k) (acc ++ [word]) mmap
+
+getWords : Nat -> MarkovMap -> { [RND] } Eff (List String)
+getWords n mmap = case !(rndStart mmap) of
+                       Nothing => pure ["Empty markov map!"]
+                       Just start => getWords' n [start] mmap
 
 ||| The RND effect doesn't do this for us, so pick something based on the time.
 getTimeSeed : Eff Integer [SYSTEM]
@@ -81,14 +86,7 @@ main' : { [STDIO, RND, SYSTEM] } Eff ()
 main' = do srand !getTimeSeed
            putStr "Using random seed: "
            putStrLn (show !getTimeSeed)
-           case !(rndStart babelMap) of
-             Nothing => printLn "Oh shit, nothing to print!"
-             Just word => printLn $ unwords $ !(getWords' 10 [word] babelMap)
-
-||| Concatenate the given list of strings into a single string.
-str : List String -> String
-str [] = ""
-str strs = foldr Prelude.Strings.(++) "" strs
+           printLn $ unwords $ !(getWords 30 babelMap)
 
 ||| Join a list of strings together using the given delimeter.
 join : List String -> String -> String
