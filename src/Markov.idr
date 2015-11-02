@@ -48,6 +48,14 @@ markovFromFile (fname::_) = do fcontents' <- run $ readText fname
                                  Left errMsg => putStrLn errMsg
                                  Right fcontents => run $ main' $ buildMarkovMap fcontents
 
+showMap : List String -> IO ()
+showMap [] = putStrLn $ prettyShow babelMap
+showMap (fname::_) = do fcontents' <- run $ readText fname
+                        case fcontents' of
+                          Left errMsg => putStrLn errMsg
+                          Right fcontents => putStrLn $ prettyShow $ buildMarkovMap fcontents
+
+
 helpText : String
 helpText = "Call with no arguments to generate a sentence from the default map,"
            ++ " or try one of the following commands:\n  " ++ join commands "\n  "
@@ -56,7 +64,7 @@ helpText = "Call with no arguments to generate a sentence from the default map,"
               commands = [ "load [path] -> generate a sentence from a given file."
                          , "show [path] -> read the entire file at [path] to stdout. For debugging file IO only."
                          , "scrub [path] -> preprocess the file at [path] and print it to stdout. For debugging."
-                         , "map -> print the default Markov map."
+                         , "map [path] -> print the default Markov map. If no [path] is supplied, show the Library of Babel's map."
                          , "help -> print this help." ]
 
 runCommand : String -> List String -> IO ()
@@ -64,7 +72,7 @@ runCommand command args = case command of
                             "load" => markovFromFile args
                             "show" => showFile args
                             "scrub" => scrubFile args
-                            "map" => putStrLn $ prettyShow babelMap
+                            "map" => showMap args
                             "help" => putStrLn helpText
                             x => do putStrLn $ "'" ++ x ++ "' is not a valid command.\n"
                                     putStrLn helpText
