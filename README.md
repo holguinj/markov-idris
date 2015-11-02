@@ -1,14 +1,27 @@
-# Markov-idris
+# markov-idris
 
-Oh hey, this is a work in progress and it isn't ready for general use.
+A simple [Markov generator](https://en.wikipedia.org/wiki/Markov_chain#Markov_text_generators) written in [Idris](http://idris-lang.org).
 
-You can build it, if you like, by running `make` in this directory.
-You can then run the resulting `markov` executable.
-It should print out a random sentence inspired by [The Library of Babel](https://archive.org/stream/TheLibraryOfBabel/babel_djvu.txt).
+## building
+
+* Requires [Idris 0.9.19](http://www.idris-lang.org/idris-0-9-19-released/).
+* Tested on OS X and Linux, but should run anywhere that Idris does.
+
+Just clone this repository, `cd` into it and run `make`.
+This will create an executable called `markov`.
+
+## use
+
+The `markov` binary has a built-in generator for sentences inspired by [The Library of Babel](https://archive.org/stream/TheLibraryOfBabel/babel_djvu.txt), so if you want one of those then you can just run `./markov`.
 
 To generate some text from a file of your choosing, try `./markov load [PATH]`.
-Note that this segfaults when reading some larger files.
+Note that this segfaults when reading some larger files (around 4,500+ lines). See [issue #1](https://github.com/holguinj/markov-idris/issues/1).
 
 To see a human-readable version of the default Markov map, try `./markov map`.
 
 For help text, try `./markov help`.
+
+## license
+
+This software is licensed under the GNU General Public License version 3.
+See the LICENSE file for more details.
