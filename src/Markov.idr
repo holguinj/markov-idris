@@ -58,7 +58,7 @@ showMap (fname::_) = do fcontents' <- run $ readText fname
 
 helpText : String
 helpText = "Call with no arguments to generate a sentence from the default map,"
-           ++ " or try one of the following commands:\n  " ++ join commands "\n  "
+           ++ " or try one of the following commands:\n  " ++ unlines commands
             where
               commands : List String
               commands = [ "load [path] -> generate a sentence from a given file."
